@@ -1,0 +1,15 @@
+{
+  "name": "Socket-Math-Game",
+  "description": "Node.js/Socket.io realtime math game",
+  "author": "Mike Jahn <themikejahn@gmail.com>",
+  "version": "0.0.1",
+  "dependencies": {
+    "connect": "2.8.4",
+    "express": "3.x",
+    "socket.io": "0.8.7",
+	"underscore": "1.5.1",
+	"jquery": "1.8.3"
+  },
+ "engines": {
+    "node": ">=0.6"
+  }}
