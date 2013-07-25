@@ -2,7 +2,7 @@
   "name": "Socket-Math-Game",
   "description": "Node.js/Socket.io realtime math game",
   "author": "Mike Jahn <themikejahn@gmail.com>",
-  "version": "0.0.1-3",
+  "version": "0.0.1-4",
   "dependencies": {
     "connect": "2.8.4",
     "express": "3.x",

@@ -17,7 +17,13 @@ $(function() {
 			$('#players').empty();
 
 			_.each(clients.members, function(client){
-			$('#players').append('<li>' + client.name+ '    - Score: ' + client.score + '</li>');
+			if(client.id === socket.id){
+				$('#players').append('<li><b>' + client.name+ '    - Score: ' + client.score + '</b> <--- thats you!</li>');
+				
+			} else {
+				$('#players').append('<li>' + client.name+ '    - Score: ' + client.score + '</li>');
+				
+			}
 
 			});
 			
