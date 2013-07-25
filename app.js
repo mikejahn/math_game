@@ -111,7 +111,7 @@ io.sockets.on('connection', function (socket) {
 	socket.on('disconnect', function() {
 		delete members[socket.id];
 		console.log("Members: ", members);
-		socket.broadcast.emit("new-client", members);
+		socket.broadcast.emit("new-client", {members: members, q:q});
 		
 	});
     
