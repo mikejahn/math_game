@@ -1,5 +1,12 @@
-
 var socket = io.connect('http://' + document.location.host);
+
+//util functions for client.js
+function emptyMessagesDiv() {
+	setInterval(function() {
+		$('#messages').html("");
+	}, 2000);
+}
+
 
 $(function() {
 	console.log('http://' + document.location.host);
@@ -9,10 +16,13 @@ $(function() {
 		
 			$('#players').empty();
 
-			_.each(clients, function(client){
+			_.each(clients.members, function(client){
 			$('#players').append('<li>' + client.name+ '    - Score: ' + client.score + '</li>');
 
 			});
+			
+			$('#content').html(clients.q.display);
+			console.log("clients.q.display", clients.q.display);
 		
 	});
 	
@@ -33,6 +43,8 @@ $(function() {
 
 	socket.on("correct-answer", function(clients) {
 		console.log("CORRECT!");
+		$('#messages').html("Correct!");
+		emptyMessagesDiv();
 			$('#players').empty();
 
 			_.each(clients, function(client){
@@ -48,6 +60,9 @@ $(function() {
 	
 	socket.on('question-answered-correctly', function(clients) {
 		console.log("someone else got it =(");
+		$('#messages').html("Someone else got the answer first!");
+		emptyMessagesDiv();
+	
 			$('#players').empty();
 
 			_.each(clients, function(client){

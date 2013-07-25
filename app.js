@@ -19,6 +19,11 @@ app.use("/scripts", express.static(__dirname + '/public/scripts'));
 //setup socket.io
 var io = require('socket.io').listen(app.listen(3001));
 
+//util functions for app
+function getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 //User object
 var User = function(id) {
 	this.id = id;
@@ -27,8 +32,8 @@ var User = function(id) {
 }
 
 var Question = function() {
-	this.number1 = Math.random() * (20);
-	this.number2 = Math.random() * (20);
+	this.number1 = getRandomInt(0,20);
+	this.number2 = getRandomInt(0,20);
 	this.answer = this.number1 + this.number2;
 	this.display = this.number1 + " + " + this.number2 + " = ___ ";
 }
@@ -37,11 +42,17 @@ var Question = function() {
 var Room = function(name) {
 	var members = {};
 	this.name = name;
+	this.question = {};
+	this.question.answer = 4; //default to 4 since first question is 2 + 2;
 	
 	//add a member to the room
 	function addMember(member) {
 		member.score = 0;
 		member[member.id] = member;
+	}
+	
+	function newQuestion() {
+		this.question = new Question();
 	}
 }
 
@@ -52,7 +63,8 @@ var questions = [];
 
 
 var members = {};
-var q = new Question();
+var q = {answer: 4}; //default to 4 since first question is 2 + 2;
+var room = new Room();
 
 io.sockets.q = q;
 io.sockets.on('connection', function (socket) {
@@ -73,29 +85,11 @@ io.sockets.on('connection', function (socket) {
 	// 
 	// });
 	
-	
-
-	
-	
-	console.log("members: ", members);
-	
-	socket.broadcast.emit("new-client", members);
-	io.sockets.socket(socket.id).emit("new-client", members);
-	
-	socket.on('disconnect', function() {
-		delete members[socket.id];
-		console.log("Members: ", members);
-		socket.broadcast.emit("new-client", members);
-		
-	});
-    
-	
-	var answer = "4";
 	//recieve answer from a connected socket
 	socket.on('answer', function (data) {
 		console.log("Received answer " +  data.answer + " from " + data.socket_id);	
-		
-		if(data.answer === answer) {
+		console.log("Solution: ",q.answer);
+		if(parseInt(data.answer) === q.answer) {
 			members[data.socket_id].score+=1;
 			io.sockets.socket(data.socket_id).emit("correct-answer", members);
 			socket.broadcast.emit('question-answered-correctly', members);
@@ -105,7 +99,24 @@ io.sockets.on('connection', function (socket) {
 			
 			
 		}
-	});	
+	});
+
+	
+	
+	console.log("members: ", members);
+	
+	socket.broadcast.emit("new-client", {members:members, q:q});
+	io.sockets.socket(socket.id).emit("new-client", {members: members, q:q});
+	
+	socket.on('disconnect', function() {
+		delete members[socket.id];
+		console.log("Members: ", members);
+		socket.broadcast.emit("new-client", members);
+		
+	});
+    
+	
+
 });
 
 
