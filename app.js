@@ -38,35 +38,31 @@ var Question = function() {
 	this.display = this.number1 + " + " + this.number2 + " = ___ ";
 }
 
-//Math Room Object
-var Room = function(name) {
-	var members = {};
-	this.name = name;
-	this.question = {};
-	this.question.answer = 4; //default to 4 since first question is 2 + 2;
-	
-	//add a member to the room
-	function addMember(member) {
-		member.score = 0;
-		member[member.id] = member;
-	}
-	
-	function newQuestion() {
-		this.question = new Question();
-	}
-}
+// //Math Room Object
+// var Room = function(name) {
+// 	var members = {};
+// 	this.name = name;
+// 	this.question = {};
+// 	this.question.answer = 4; //default to 4 since first question is 2 + 2;
+// 	
+// 	//add a member to the room
+// 	function addMember(member) {
+// 		member.score = 0;
+// 		member[member.id] = member;
+// 	}
+// 	
+// 	function newQuestion() {
+// 		this.question = new Question();
+// 	}
+// }
 
-//create Addition room
-var additionRoom = new Room('Addition');
 
 var questions = [];
 
 
 var members = {};
 var q = {answer: 4}; //default to 4 since first question is 2 + 2;
-var room = new Room();
 
-io.sockets.q = q;
 io.sockets.on('connection', function (socket) {
 	
 	
@@ -75,16 +71,7 @@ io.sockets.on('connection', function (socket) {
 	
 	var newUser = new User(socket.id);
 	members[socket.id] = newUser;
-	// _.each(io.sockets.clients(), function(client){
-	//     	members[client.id] = client.id;
-	// 	members[client.id].score = 0;
-	// 	// if(!members[client.id].score){
-	// 	// 			members[client.id].score = 0;
-	// 	// 	    	
-	// 	// 		}
-	// 
-	// });
-	
+
 	//recieve answer from a connected socket
 	socket.on('answer', function (data) {
 		console.log("Received answer " +  data.answer + " from " + data.socket_id);	
@@ -95,24 +82,20 @@ io.sockets.on('connection', function (socket) {
 			socket.broadcast.emit('question-answered-correctly', members);
 			q = new Question();
 			socket.broadcast.emit('new-question', q);
-			io.sockets.socket(data.socket_id).emit("new-question", q);
-			
-			
+			io.sockets.socket(data.socket_id).emit("new-question", q);	
+		} else {
+			//wrong answer, tell user
+			io.sockets.socket(data.socket_id).emit("wrong-answer");
 		}
 	});
 
-	
-	
-	console.log("members: ", members);
-	
+		
 	socket.broadcast.emit("new-client", {members:members, q:q});
 	io.sockets.socket(socket.id).emit("new-client", {members: members, q:q});
 	
 	socket.on('disconnect', function() {
 		delete members[socket.id];
-		console.log("Members: ", members);
-		socket.broadcast.emit("new-client", {members: members, q:q});
-		
+		socket.broadcast.emit("new-client", {members: members, q:q});		
 	});
     
 	
