@@ -1,27 +1,24 @@
 var socket = io.connect('http://' + document.location.host);
 
 //util functions for client.js
-
 //empty the messages div
 function emptyMessagesDiv() {
 	setInterval(function() {
 		$('#messages').html("");
 		$('#messages').removeClass();
-	}, 2000);
+	}, 4000);
 }
 
 //repaint the leaderboard
 function paintLeaderBoard(members) {
 	$('#players').empty();
-		_.each(members, function(client){
+	_.each(members, function(client){
 		if(client.id === socket.id){
-			$('#players').append('<li><b>' + client.name+ '    - Score: ' + client.score + '</b> <--- thats you!</li>');
-			
+			$('#players').append('<li><b>' + client.name + '    - Score: ' + client.score + '</b> <--- thats you!</li>');	
 		} else {
-			$('#players').append('<li>' + client.name+ '    - Score: ' + client.score + '</li>');
-			
+			$('#players').append('<li>' + client.name + '    - Score: ' + client.score + '</li>');	
 		}
-		});
+	});
 }
 
 
@@ -32,15 +29,22 @@ $(function() {
 		$('#content').html(data.q.display);
 	});
 	
-
-	
 	socket.on('connect', function(){
     	socket.id = socket.socket.sessionid;
   	});
+
+	$('#answer').keydown(function (e){
+	    if(e.keyCode == 13){
+	        	var answer = $("#answer").val();
+		    	socket.emit('answer', {answer: answer, socket_id: socket.id});
+				$("#answer").val("");
+	    }
+	})
 	
 	$('#submit-button').click(function(){
 		var answer = $("#answer").val();
     	socket.emit('answer', {answer: answer, socket_id: socket.id});
+		$("#answer").val("");
   	});
 
 	socket.on("correct-answer", function(members) {
@@ -65,7 +69,7 @@ $(function() {
 		$('#messages').html("Someone else got the answer first!");
 		emptyMessagesDiv();
 		paintLeaderBoard(members);	
-	})
+	});
 
 	
 });

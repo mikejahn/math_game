@@ -38,28 +38,7 @@ var Question = function() {
 	this.display = this.number1 + " + " + this.number2 + " = ___ ";
 }
 
-// //Math Room Object
-// var Room = function(name) {
-// 	var members = {};
-// 	this.name = name;
-// 	this.question = {};
-// 	this.question.answer = 4; //default to 4 since first question is 2 + 2;
-// 	
-// 	//add a member to the room
-// 	function addMember(member) {
-// 		member.score = 0;
-// 		member[member.id] = member;
-// 	}
-// 	
-// 	function newQuestion() {
-// 		this.question = new Question();
-// 	}
-// }
-
-
 var questions = [];
-
-
 var members = {};
 var q = {answer: 4}; //default to 4 since first question is 2 + 2;
 
@@ -98,8 +77,6 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit("new-client", {members: members, q:q});		
 	});
     
-	
-
 });
 
 
