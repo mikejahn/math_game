@@ -1,6 +1,6 @@
 math_game
 =========
 
-Real time multi-user ongoing math game written in Node.js/Socket.io using web sockets.
+Real time multi-user ongoing math game written in JavaScript using Node.js/Socket.io with web sockets.
 
-Currently hosted at: http://math_game.nodejitsu.com
+Currently hosted at: [http://math_game.nodejitsu.com](http://math_game.nodejitsu.com "http://math_game.nodejitsu.com")
